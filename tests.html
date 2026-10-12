@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Validator tests</title>
+</head>
+<body>
+  <main>
+    <h1>Validator tests</h1>
+    <p id="summary" role="status"></p>
+    <ul id="results"></ul>
+  </main>
+
+  <script type="module">
+    import { validateDescription, validateAmount, validateDate, validateCategory } from './scripts/validators.js';
+
+    const tests = [
+      [validateDescription, ['Lunch at cafeteria', 'Bus pass'], [' Lunch', 'Lunch ', 'Lunch  at', '', 'Lunch at the the cafe']],
+      [validateAmount, ['12.50', '0', '89.99', '5'], ['012', '12.345', '-5', 'abc', '']],
+      [validateDate, ['2025-09-25', '2024-02-29'], ['2025-13-01', '2025-9-5', '2025-02-30', '2023-02-29']],
+      [validateCategory, ['Food', 'Fast-food', 'Eating out'], ['Food2', '-Food', '']],
+    ];
+
+    const results = document.getElementById('results');
+    let passed = 0, total = 0;
+
+    function check(name, ok) {
+      total++;
+      if (ok) passed++;
+      const li = document.createElement('li');
+      li.textContent = (ok ? 'PASS: ' : 'FAIL: ') + name;
+      li.style.color = ok ? '#0b5d4b' : '#b3261e';
+      results.append(li);
+    }
+
+    for (const [fn, good, bad] of tests) {
+      good.forEach(v => check(`${fn.name}("${v}") is accepted`, fn(v) === ''));
+      bad.forEach(v => check(`${fn.name}("${v}") is rejected`, fn(v) !== ''));
+    }
+
+    document.getElementById('summary').textContent = `${passed} of ${total} tests passed.`;
+  </script>
+</body>
+</html>
