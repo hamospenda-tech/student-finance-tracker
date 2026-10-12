@@ -13,6 +13,7 @@
   </main>
 
   <script type="module">
+    import { parseImport } from './scripts/storage.js';
     import { validateDescription, validateAmount, validateDate, validateCategory, validateRate } from './scripts/validators.js';
 
     const tests = [
@@ -39,6 +40,21 @@
       good.forEach(v => check(`${fn.name}("${v}") is accepted`, fn(v) === ''));
       bad.forEach(v => check(`${fn.name}("${v}") is rejected`, fn(v) !== ''));
     }
+
+    const sample = { id: 'a1', description: 'Bus pass', amount: 45, category: 'Transport', date: '2025-09-20', createdAt: '2025-09-20T08:00:00.000Z', updatedAt: '2025-09-20T08:00:00.000Z' };
+    const imports = [
+      ['a valid file', JSON.stringify([sample]), true],
+      ['not JSON', '{oops', false],
+      ['not a list', '{}', false],
+      ['duplicate ids', JSON.stringify([sample, sample]), false],
+      ['bad amount', JSON.stringify([{ ...sample, amount: 'free' }]), false],
+      ['bad date', JSON.stringify([{ ...sample, date: '2025-02-30' }]), false],
+      ['missing timestamps', JSON.stringify([{ ...sample, createdAt: undefined }]), false],
+    ];
+    for (const [name, text, shouldPass] of imports) check(`import: ${name}`, !parseImport(text).error === shouldPass);
+
+    const seed = await fetch('seed.json').then(r => r.text()).catch(() => '');
+    check('seed.json passes import validation', !parseImport(seed).error);
 
     document.getElementById('summary').textContent = `${passed} of ${total} tests passed.`;
   </script>

@@ -25,7 +25,7 @@
       <h2 id="about-h">About</h2>
       <p>Track what you spend as a student, search your transactions with regex, and stay under your monthly cap. Your data stays in this browser.</p>
       <p>GitHub: <a href="https://github.com/hamospenda-tech">hamospenda-tech</a><br>
-         Email: <a href="mailto:h.amospenda@alustudent.com">h.amospenda@alustudent.com</a></p>
+         Email: <a href="mailto:your.email@example.com">your.email@example.com</a></p>
     </section>
 
     <section id="dashboard" aria-labelledby="dashboard-h">
@@ -114,14 +114,7 @@
         <p class="error" id="date-error" role="status"></p>
 
         <label for="category">Category</label>
-        <select id="category">
-          <option>Food</option>
-          <option>Books</option>
-          <option>Transport</option>
-          <option>Entertainment</option>
-          <option>Fees</option>
-          <option>Other</option>
-        </select>
+        <select id="category"></select>
 
         <button type="submit">Save transaction</button>
         <button type="button" id="cancel-btn">Cancel</button>
@@ -156,7 +149,8 @@
       <h3>Your data</h3>
       <button type="button" id="export-btn">Export JSON</button>
       <label for="import-file">Import JSON file</label>
-      <input type="file" id="import-file" accept=".json">
+      <input type="file" id="import-file" accept=".json" aria-describedby="import-error">
+      <p class="error" id="import-error" role="status"></p>
     </section>
   </main>
 
