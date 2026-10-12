@@ -13,13 +13,14 @@
   </main>
 
   <script type="module">
-    import { validateDescription, validateAmount, validateDate, validateCategory } from './scripts/validators.js';
+    import { validateDescription, validateAmount, validateDate, validateCategory, validateRate } from './scripts/validators.js';
 
     const tests = [
       [validateDescription, ['Lunch at cafeteria', 'Bus pass'], [' Lunch', 'Lunch ', 'Lunch  at', '', 'Lunch at the the cafe']],
       [validateAmount, ['12.50', '0', '89.99', '5'], ['012', '12.345', '-5', 'abc', '']],
       [validateDate, ['2025-09-25', '2024-02-29'], ['2025-13-01', '2025-9-5', '2025-02-30', '2023-02-29']],
       [validateCategory, ['Food', 'Fast-food', 'Eating out'], ['Food2', '-Food', '']],
+      [validateRate, ['0.00069', '1', '0.5', '12.5'], ['0', '0.0', '-1', 'abc', '', '.5']],
     ];
 
     const results = document.getElementById('results');
