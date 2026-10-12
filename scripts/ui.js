@@ -80,3 +80,10 @@ export function renderDashboard(s, cap) {
     .join('');
   $('trend').setAttribute('aria-label', 'Spending over the last 7 days: ' + s.days.map(d => `${d.key} ${fmt(d.total)}`).join(', '));
 }
+
+export function renderCategories(categories) {
+  $('category').innerHTML = categories.map(c => `<option>${escapeHtml(c)}</option>`).join('');
+  $('category-list').innerHTML = categories
+    .map(c => `<li>${escapeHtml(c)} <button type="button" data-category="${escapeHtml(c)}" aria-label="Remove ${escapeHtml(c)}">Remove</button></li>`)
+    .join('');
+}

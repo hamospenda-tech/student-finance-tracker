@@ -1,8 +1,9 @@
 import { validateDescription, validateAmount, validateDate, validateCategory, validateRate } from './validators.js';
 import { records, settings, addRecord, updateRecord, deleteRecord, updateSettings, replaceRecords } from './state.js';
 import { compileRegex, filterRecords, sortRecords } from './search.js';
+import { parseImport, downloadJson } from './storage.js';
 import { getStats } from './stats.js';
-import { renderRecords, renderDashboard } from './ui.js';
+import { renderRecords, renderDashboard, renderCategories } from './ui.js';
 
 const $ = id => document.getElementById(id);
 let editingId = null;
@@ -141,10 +142,64 @@ $('settings-form').addEventListener('submit', event => {
 
 $('category-form').addEventListener('submit', event => {
   event.preventDefault();
-  const message = validateCategory($('new-category').value);
+  const name = $('new-category').value;
+  let message = validateCategory(name);
+  if (!message && settings.categories.some(c => c.toLowerCase() === name.toLowerCase())) {
+    message = 'That category already exists.';
+  }
+
   showError('new-category', 'category-error', message);
-  if (message) $('new-category').focus();
-  else say('Category looks good. Saving comes in M6.');
+  if (message) {
+    $('new-category').focus();
+    return;
+  }
+
+  updateSettings({ categories: [...settings.categories, name] });
+  $('category-form').reset();
+  renderCategories(settings.categories);
+  say('Category added.');
+});
+
+$('category-list').addEventListener('click', event => {
+  const name = event.target.dataset.category;
+  if (!name) return;
+
+  const used = records.filter(r => r.category === name).length;
+  let message = '';
+  if (used) message = `"${name}" is used by ${used} record(s), so it cannot be removed.`;
+  else if (settings.categories.length === 1) message = 'Keep at least one category.';
+
+  $('category-error').textContent = message;
+  if (message) return;
+
+  updateSettings({ categories: settings.categories.filter(c => c !== name) });
+  renderCategories(settings.categories);
+  say('Category removed.');
+});
+
+$('export-btn').addEventListener('click', () => {
+  downloadJson(records, `finance-tracker-${new Date().toISOString().slice(0, 10)}.json`);
+  say('Exported your transactions.');
+});
+
+$('import-file').addEventListener('change', async event => {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const result = parseImport(await file.text());
+  $('import-error').textContent = result.error || '';
+  event.target.value = '';
+  if (result.error) return;
+  if (!confirm(`Replace your ${records.length} records with the ${result.records.length} in this file?`)) return;
+
+  replaceRecords(result.records);
+  const extra = result.records.map(r => r.category).filter(c => !settings.categories.includes(c));
+  if (extra.length) updateSettings({ categories: [...settings.categories, ...new Set(extra)] });
+
+  editingId = null;
+  renderCategories(settings.categories);
+  render();
+  say(`Imported ${result.records.length} records.`);
 });
 
 $('records-body').addEventListener('click', event => {
@@ -179,6 +234,7 @@ async function start() {
     if (response && response.ok) replaceRecords(await response.json());
   }
   fillSettings();
+  renderCategories(settings.categories);
   render();
 }
 
