@@ -125,6 +125,10 @@ mark { background: var(--mark); color: var(--ink); }
 .records-table th, .records-table td { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: 0.35rem 0; text-align: left; }
 .records-table [data-label]::before { content: attr(data-label); font-weight: 600; color: var(--muted); }
 
+#category-list { margin: 0 0 1rem; padding: 0; list-style: none; }
+#category-list li { display: flex; align-items: center; gap: 0.5rem; }
+#category-list button { margin: 0.25rem 0; }
+
 /* Status message bar */
 .status { position: fixed; left: 0; right: 0; bottom: 0; margin: 0; padding: 0.75rem 1rem; background: var(--ink); color: #fff; }
 .status:empty { display: none; }
