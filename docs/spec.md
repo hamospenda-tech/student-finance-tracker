@@ -1,0 +1,7 @@
+# Student Finance Tracker: Overview (M1)
+
+This is a simple web app that helps a student track their spending. You can add, edit and delete transactions, search them using regex, and see stats like total spent, top category and a last-7-days chart. It also lets you set a monthly cap and tells you how much is left or how much you went over. The app has five sections: About, Dashboard, Records, Add/Edit and Settings. Each transaction is saved with an id, description, amount, category, date, createdAt and updatedAt. All amounts are saved in RWF. In Settings you can type in your own rates for USD and EUR, and the Dashboard then also shows your total spent in those currencies. Everything is saved in the browser's localStorage and can be exported or imported as JSON.
+
+The layout is mobile-first. On a phone (about 360px) everything sits in one column and records show as cards. At 768px the form and stats spread into two columns, and at 1024px the records show as a full table. Only one section is shown at a time, and the nav buttons switch between them.
+
+For accessibility, the page uses proper landmarks (header, nav, main, section, footer), a skip-to-content link, and labels tied to every input. Errors and updates are announced to screen readers: saves and edits politely, and going over the cap assertively. Everything can be used with the keyboard alone, focus outlines are always visible, and colors are chosen to have enough contrast.
