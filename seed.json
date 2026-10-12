@@ -1,0 +1,14 @@
+[
+  {"id":"txn_1","description":"Lunch at cafeteria","amount":2500,"category":"Food","date":"2026-10-12","createdAt":"2026-10-12T08:00:00.000Z","updatedAt":"2026-10-12T08:00:00.000Z"},
+  {"id":"txn_2","description":"Coffee with friends","amount":1800,"category":"Entertainment","date":"2026-10-11","createdAt":"2026-10-11T15:30:00.000Z","updatedAt":"2026-10-11T15:30:00.000Z"},
+  {"id":"txn_3","description":"Bus pass","amount":15000,"category":"Transport","date":"2026-10-10","createdAt":"2026-10-10T07:00:00.000Z","updatedAt":"2026-10-10T07:00:00.000Z"},
+  {"id":"txn_4","description":"Chemistry textbook","amount":35000,"category":"Books","date":"2026-10-08","createdAt":"2026-10-08T12:00:00.000Z","updatedAt":"2026-10-08T12:00:00.000Z"},
+  {"id":"txn_5","description":"Tea and mandazi","amount":600.5,"category":"Food","date":"2026-10-08","createdAt":"2026-10-08T09:00:00.000Z","updatedAt":"2026-10-08T09:00:00.000Z"},
+  {"id":"txn_6","description":"Printing notes <draft>","amount":0.5,"category":"Other","date":"2026-10-07","createdAt":"2026-10-07T10:00:00.000Z","updatedAt":"2026-10-07T10:00:00.000Z"},
+  {"id":"txn_7","description":"Joe's \"special\" lunch","amount":4500.25,"category":"Food","date":"2026-10-06","createdAt":"2026-10-06T13:00:00.000Z","updatedAt":"2026-10-06T13:00:00.000Z"},
+  {"id":"txn_8","description":"Semester fees (1st installment)","amount":1200000,"category":"Fees","date":"2026-09-01","createdAt":"2026-09-01T09:00:00.000Z","updatedAt":"2026-09-01T09:00:00.000Z"},
+  {"id":"txn_9","description":"Leap day snack","amount":800,"category":"Food","date":"2024-02-29","createdAt":"2024-02-29T12:00:00.000Z","updatedAt":"2024-02-29T12:00:00.000Z"},
+  {"id":"txn_10","description":"New Year's Eve movie","amount":7000,"category":"Entertainment","date":"2025-12-31","createdAt":"2025-12-31T18:00:00.000Z","updatedAt":"2025-12-31T18:00:00.000Z"},
+  {"id":"txn_11","description":"Library fine","amount":300,"category":"Fees","date":"2026-01-01","createdAt":"2026-01-01T10:00:00.000Z","updatedAt":"2026-01-01T10:00:00.000Z"},
+  {"id":"txn_12","description":"Notebook & pens","amount":3200,"category":"Books","date":"2026-09-30","createdAt":"2026-09-30T11:00:00.000Z","updatedAt":"2026-09-30T11:00:00.000Z"}
+]
