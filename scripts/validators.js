@@ -4,6 +4,7 @@ export const rules = {
   date: /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/,
   category: /^[A-Za-z]+(?:[ -][A-Za-z]+)*$/,
   duplicateWord: /\b(\w+)\s+\1\b/i,
+  rate: /^\d+(\.\d{1,8})?$/,
 };
 
 export function validateDescription(value) {
@@ -26,4 +27,8 @@ export function validateDate(value) {
 
 export function validateCategory(value) {
   return rules.category.test(value) ? '' : 'Use letters, spaces and hyphens only.';
+}
+
+export function validateRate(value) {
+  return rules.rate.test(value) && Number(value) > 0 ? '' : 'Enter a rate above 0, like 0.00069.';
 }
