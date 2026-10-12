@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Student Finance Tracker</title>
+  <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header>
+    <h1>Student Finance Tracker</h1>
+    <nav aria-label="Main">
+      <a href="#about">About</a>
+      <a href="#dashboard">Dashboard</a>
+      <a href="#records">Records</a>
+      <a href="#add">Add</a>
+      <a href="#settings">Settings</a>
+    </nav>
+  </header>
+
+  <main id="main" tabindex="-1">
+    <section id="about" aria-labelledby="about-h">
+      <h2 id="about-h">About</h2>
+      <p>Track what you spend as a student, search your transactions with regex, and stay under your monthly cap. Your data stays in this browser.</p>
+      <p>GitHub: <a href="https://github.com/hamospenda-tech">hamospenda-tech</a><br>
+         Email: <a href="mailto:h.amospenda@alustudent.com">h.amospenda@alustudent.com</a></p>
+    </section>
+
+    <section id="dashboard" aria-labelledby="dashboard-h">
+      <h2 id="dashboard-h">Dashboard</h2>
+      <div class="cap" id="cap-box">
+        <p class="cap-figure" id="cap-remaining">0 RWF left</p>
+        <div class="meter" aria-hidden="true"><span id="cap-fill"></span></div>
+        <p id="cap-status" role="status"></p>
+        <p id="cap-alert" role="alert"></p>
+      </div>
+      <dl class="stats">
+        <div><dt>Records</dt><dd id="stat-count">0</dd></div>
+        <div><dt>Spent (RWF)</dt><dd id="stat-total">0</dd></div>
+        <div><dt>Top category</dt><dd id="stat-top">None</dd></div>
+        <div><dt>Spent (USD)</dt><dd id="stat-usd">0.00</dd></div>
+        <div><dt>Spent (EUR)</dt><dd id="stat-eur">0.00</dd></div>
+      </dl>
+      <h3>Last 7 days</h3>
+      <div class="trend" id="trend" role="img" aria-label="Spending over the last 7 days"></div>
+    </section>
+
+    <section id="records" aria-labelledby="records-h">
+      <h2 id="records-h">Records</h2>
+      <form class="toolbar" role="search" aria-label="Search and sort">
+        <div>
+          <label for="search">Search (regex)</label>
+          <input id="search" placeholder="e.g. coffee|tea">
+        </div>
+        <div>
+          <label for="sort">Sort by</label>
+          <select id="sort">
+            <option value="date-desc">Date (newest)</option>
+            <option value="date-asc">Date (oldest)</option>
+            <option value="description-asc">Description (A-Z)</option>
+            <option value="description-desc">Description (Z-A)</option>
+            <option value="amount-desc">Amount (high to low)</option>
+            <option value="amount-asc">Amount (low to high)</option>
+          </select>
+        </div>
+        <label><input type="checkbox" id="ci" checked> Ignore case</label>
+      </form>
+      <p id="search-status" role="status"></p>
+
+      <table class="records-table">
+        <caption class="sr-only">Transactions</caption>
+        <thead>
+          <tr>
+            <th scope="col">Description</th>
+            <th scope="col">Amount (RWF)</th>
+            <th scope="col">Category</th>
+            <th scope="col">Date</th>
+            <th scope="col">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="records-body">
+          <!-- Sample row to check the layout. The JavaScript replaces it in M4. -->
+          <tr>
+            <th scope="row" data-label="Description">Lunch at cafeteria</th>
+            <td data-label="Amount (RWF)">12.50</td>
+            <td data-label="Category">Food</td>
+            <td data-label="Date">2025-09-25</td>
+            <td data-label="Actions">
+              <button type="button">Edit</button>
+              <button type="button" class="danger">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="add" aria-labelledby="add-h">
+      <h2 id="add-h">Add transaction</h2>
+      <form id="record-form" novalidate>
+        <input type="hidden" id="record-id">
+
+        <label for="description">Description</label>
+        <input id="description" aria-describedby="description-error">
+        <p class="error" id="description-error" role="status"></p>
+
+        <label for="amount">Amount (RWF)</label>
+        <input id="amount" aria-describedby="amount-error">
+        <p class="error" id="amount-error" role="status"></p>
+
+        <label for="date">Date</label>
+        <input id="date" placeholder="YYYY-MM-DD" aria-describedby="date-error">
+        <p class="error" id="date-error" role="status"></p>
+
+        <label for="category">Category</label>
+        <select id="category">
+          <option>Food</option>
+          <option>Books</option>
+          <option>Transport</option>
+          <option>Entertainment</option>
+          <option>Fees</option>
+          <option>Other</option>
+        </select>
+
+        <button type="submit">Save transaction</button>
+        <button type="button" id="cancel-btn">Cancel</button>
+      </form>
+    </section>
+
+    <section id="settings" aria-labelledby="settings-h">
+      <h2 id="settings-h">Settings</h2>
+      <form id="settings-form" novalidate>
+        <label for="cap-input">Monthly cap (RWF)</label>
+        <input id="cap-input" aria-describedby="settings-error">
+
+        <label for="rate-usd">1 RWF in USD</label>
+        <input id="rate-usd" aria-describedby="settings-error">
+
+        <label for="rate-eur">1 RWF in EUR</label>
+        <input id="rate-eur" aria-describedby="settings-error">
+
+        <p class="error" id="settings-error" role="status"></p>
+        <button type="submit">Save settings</button>
+      </form>
+
+      <h3>Categories</h3>
+      <ul id="category-list"></ul>
+      <form id="category-form" novalidate>
+        <label for="new-category">New category</label>
+        <input id="new-category" aria-describedby="category-error">
+        <p class="error" id="category-error" role="status"></p>
+        <button type="submit">Add category</button>
+      </form>
+
+      <h3>Your data</h3>
+      <button type="button" id="export-btn">Export JSON</button>
+      <label for="import-file">Import JSON file</label>
+      <input type="file" id="import-file" accept=".json">
+    </section>
+  </main>
+
+  <footer>
+    <p>Built by Joshua for the Responsive UI assignment.</p>
+  </footer>
+
+  <p class="status" id="status" role="status"></p>
+  <script type="module" src="scripts/main.js"></script>
+</body>
+</html>
