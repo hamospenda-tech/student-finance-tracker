@@ -90,11 +90,8 @@ $('records-body').addEventListener('click', event => {
 
 async function start() {
   if (localStorage.getItem('sft:records') === null) {
-    try {
-      replaceRecords(await (await fetch('seed.json')).json());
-    } catch {
-      replaceRecords([]);
-    }
+    const response = await fetch('seed.json').catch(() => null);
+    if (response && response.ok) replaceRecords(await response.json());
   }
   render();
 }
