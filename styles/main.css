@@ -109,8 +109,9 @@ button.danger { color: var(--danger); border-color: var(--danger); }
 .stats dt { color: var(--muted); font-size: 0.875rem; }
 .stats dd { margin: 0; font-size: 1.5rem; font-weight: 600; }
 
-.trend { display: flex; align-items: flex-end; gap: 0.5rem; height: 8rem; border-bottom: 1px solid var(--line); }
-.trend div { flex: 1; min-height: 2px; background: var(--primary); transition: height 0.4s; }
+.trend { display: flex; align-items: flex-end; gap: 0.5rem; height: 8rem; padding-bottom: 1.25rem; border-bottom: 1px solid var(--line); }
+.trend div { position: relative; flex: 1; min-height: 2px; background: var(--primary); transition: height 0.4s; }
+.trend div::after { content: attr(data-day); position: absolute; top: 100%; left: 0; right: 0; margin-top: 2px; font-size: 0.75rem; text-align: center; color: var(--muted); }
 
 /* Records */
 .toolbar { display: flex; flex-wrap: wrap; gap: 0 1rem; align-items: end; }
