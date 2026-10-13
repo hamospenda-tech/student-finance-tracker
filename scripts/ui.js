@@ -1,6 +1,18 @@
 import { highlight, escapeHtml } from './search.js';
 
-const $ = id => document.getElementById(id);
+export const $ = id => document.getElementById(id);
+let timer;
+
+export function say(message) {
+  $('status').textContent = message;
+  clearTimeout(timer);
+  timer = setTimeout(() => { $('status').textContent = ''; }, 4000);
+}
+
+export function showError(inputId, errorId, message) {
+  $(errorId).textContent = message;
+  $(inputId).setAttribute('aria-invalid', message ? 'true' : 'false');
+}
 const fmt = (n, digits = 0) => n.toLocaleString('en-US', { minimumFractionDigits: digits, maximumFractionDigits: 2 });
 
 function viewRow(r, re) {
