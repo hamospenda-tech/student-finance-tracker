@@ -59,7 +59,6 @@ Accessibility:
 
 Running:
 
-- Online: open the live site.  
-- Locally: run `python -m http.server 8000` in the project folder and open [http\://localhost:8000](http://localhost:8000). Double-clicking index.html will not work because the scripts are ES modules.  
+- Online: open the live site.    
 - Tests: open tests.html the same way. It shows PASS or FAIL for each of its 46 checks.  
 - seed.json holds 12 sample records. They load on the first visit and can also be used with Import.
