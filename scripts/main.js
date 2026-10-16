@@ -1,8 +1,8 @@
 let records = JSON.parse(localStorage.getItem('student_records')) || [];
 let settings = JSON.parse(localStorage.getItem('student_settings')) || {
-  cap: 100000,
+  cap: 100000000,
   rates: { USD: 0.00075, EUR: 0.00070 },
-  categories: ['Food', 'Drinks', 'Misc', 'Transport', 'Books', 'Entertainment', 'Other']
+  categories: ['Food', 'Drinks', 'Misc', 'Transport', 'Books', 'Entertainment', 'Other', 'Fees']
 };
 
 const recordForm = document.getElementById('record-form');
@@ -258,5 +258,25 @@ document.getElementById('rate-eur').value = settings.rates.EUR;
 searchInput.addEventListener('input', renderApp);
 sortSelect.addEventListener('change', renderApp);
 
-renderCategories();
-renderApp();
+async function init() {
+  if (localStorage.getItem('student_records') === null) {
+    try {
+      const response = await fetch('seed.json');
+      if (response.ok) {
+        records = await response.json();
+        localStorage.setItem('student_records', JSON.stringify(records));
+        
+        records.forEach(r => {
+          if (r.category && !settings.categories.includes(r.category)) {
+            settings.categories.push(r.category);
+          }
+        });
+        localStorage.setItem('student_settings', JSON.stringify(settings));
+      }
+    } catch (e) {}
+  }
+  renderCategories();
+  renderApp();
+}
+
+init();
