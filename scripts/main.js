@@ -1,125 +1,176 @@
-import { validateDescription, validateAmount, validateDate } from './validators.js';
-import { records, settings, addRecord, updateRecord, deleteRecord, replaceRecords } from './state.js';
-import { compileRegex, filterRecords, sortRecords } from './search.js';
-import { getStats } from './stats.js';
-import { $, say, showError, renderRecords, renderDashboard } from './ui.js';
-import { setupSettings } from './settings.js';
+// Simple Student Finance Tracker Script
 
-let editingId = null;
+let records = JSON.parse(localStorage.getItem('student_records')) || [];
+let settings = JSON.parse(localStorage.getItem('student_settings')) || {
+  cap: 100000,
+  rates: { USD: 0.00075, EUR: 0.00070 },
+  categories: ['Food', 'Transport', 'Books', 'Entertainment', 'Other']
+};
 
-const fields = [
-  ['description', validateDescription],
-  ['amount', validateAmount],
-  ['date', validateDate],
-];
+const recordForm = document.getElementById('record-form');
+const recordsBody = document.getElementById('records-body');
+const searchInput = document.getElementById('search');
+const sortSelect = document.getElementById('sort');
+const statusBox = document.getElementById('status');
 
-function render() {
-  const text = $('search').value;
-  const re = compileRegex(text, $('ci').checked ? 'gi' : 'g');
-  const shown = sortRecords(filterRecords(records, re), $('sort').value);
-  renderRecords(shown, re, editingId);
-  renderDashboard(getStats(records, settings), settings.cap);
-
-  let message = '';
-  if (text && !re) message = 'That is not a valid regex pattern.';
-  else if (re) message = `${shown.length} of ${records.length} records match.`;
-  $('search-status').textContent = message;
+// Show status message at the bottom
+function showStatus(msg) {
+  statusBox.textContent = msg;
+  setTimeout(() => {
+    statusBox.textContent = '';
+  }, 3000);
 }
 
-function stopEditing() {
-  const id = editingId;
-  editingId = null;
-  render();
-  [...document.querySelectorAll('[data-action="edit"]')].find(b => b.dataset.id === id)?.focus();
-}
-
-function saveEdit(id) {
-  const values = {
-    description: $('edit-description').value,
-    amount: $('edit-amount').value,
-    category: $('edit-category').value,
-    date: $('edit-date').value,
-  };
-  const error = validateDescription(values.description) || validateAmount(values.amount) || validateDate(values.date);
-  $('edit-error').textContent = error;
-  if (error) return;
-
-  updateRecord(id, { ...values, amount: Number(values.amount) });
-  stopEditing();
-  say('Transaction updated.');
-}
-
-for (const [name, validate] of fields) {
-  $(name).addEventListener('change', () => showError(name, name + '-error', validate($(name).value)));
-}
-
-['search', 'ci', 'sort'].forEach(id => $(id).addEventListener('input', render));
-document.querySelector('.toolbar').addEventListener('submit', event => event.preventDefault());
-
-$('record-form').addEventListener('submit', event => {
-  event.preventDefault();
-  let firstBad = null;
-
-  for (const [name, validate] of fields) {
-    const message = validate($(name).value);
-    showError(name, name + '-error', message);
-    if (message && !firstBad) firstBad = $(name);
+// Render records and update dashboard stats
+function renderApp() {
+  recordsBody.innerHTML = '';
+  
+  let listToDisplay = [...records];
+  
+  // Search filter (Regex)
+  const searchText = searchInput.value;
+  if (searchText) {
+    try {
+      const regex = new RegExp(searchText, 'i');
+      listToDisplay = listToDisplay.filter(r => regex.test(r.description) || regex.test(r.category));
+      document.getElementById('search-status').textContent = `${listToDisplay.length} match(es) found.`;
+    } catch (e) {
+      document.getElementById('search-status').textContent = 'Invalid regular expression.';
+    }
+  } else {
+    document.getElementById('search-status').textContent = '';
   }
-  if (firstBad) return firstBad.focus();
 
-  addRecord({
-    description: $('description').value,
-    amount: $('amount').value,
-    category: $('category').value,
-    date: $('date').value,
+  // Sorting
+  const sortType = sortSelect.value;
+  listToDisplay.sort((a, b) => {
+    if (sortType === 'date-desc') return new Date(b.date) - new Date(a.date);
+    if (sortType === 'date-asc') return new Date(a.date) - new Date(b.date);
+    if (sortType === 'amount-desc') return b.amount - a.amount;
+    if (sortType === 'amount-asc') return a.amount - b.amount;
+    if (sortType === 'description-asc') return a.description.localeCompare(b.description);
+    if (sortType === 'description-desc') return b.description.localeCompare(a.description);
   });
-  $('record-form').reset();
-  render();
-  say('Transaction saved.');
-});
 
-$('cancel-btn').addEventListener('click', () => {
-  $('record-form').reset();
-  for (const [name] of fields) showError(name, name + '-error', '');
-});
-
-$('records-body').addEventListener('click', event => {
-  const button = event.target.closest('button');
-  if (!button) return;
-  const { action, id } = button.dataset;
-
-  if (action === 'edit') {
-    editingId = id;
-    render();
-    $('edit-description').focus();
-  } else if (action === 'cancel') {
-    stopEditing();
-  } else if (action === 'save') {
-    saveEdit(id);
-  } else if (action === 'delete' && confirm('Delete this transaction?')) {
-    deleteRecord(id);
-    render();
-    say('Transaction deleted.');
+  // Populate Table
+  if (listToDisplay.length === 0) {
+    recordsBody.innerHTML = '<tr><td colspan="5">No records found.</td></tr>';
+  } else {
+    listToDisplay.forEach(r => {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${r.description}</td>
+        <td>${r.amount}</td>
+        <td>${r.category}</td>
+        <td>${r.date}</td>
+        <td>
+          <button onclick="deleteRecord('${r.id}')" class="danger">Delete</button>
+        </td>
+      `;
+      recordsBody.appendChild(row);
+    });
   }
-});
 
-$('records-body').addEventListener('keydown', event => {
-  if (!editingId) return;
-  if (event.key === 'Escape') stopEditing();
-  if (event.key === 'Enter' && event.target.tagName === 'INPUT') saveEdit(editingId);
-});
-
-setupSettings(() => {
-  editingId = null;
-  render();
-});
-
-async function start() {
-  if (localStorage.getItem('sft:records') === null) {
-    const response = await fetch('seed.json').catch(() => null);
-    if (response && response.ok) replaceRecords(await response.json());
-  }
-  render();
+  updateDashboard();
 }
 
-start();
+// Calculate totals and update dashboard
+function updateDashboard() {
+  const totalSpent = records.reduce((sum, r) => sum + r.amount, 0);
+  
+  document.getElementById('stat-count').textContent = records.length;
+  document.getElementById('stat-total').textContent = totalSpent;
+  document.getElementById('stat-usd').textContent = (totalSpent * settings.rates.USD).toFixed(2);
+  document.getElementById('stat-eur').textContent = (totalSpent * settings.rates.EUR).toFixed(2);
+
+  const remaining = settings.cap - totalSpent;
+  document.getElementById('cap-remaining').textContent = `${remaining} RWF left`;
+
+  const capBox = document.getElementById('cap-box');
+  const capAlert = document.getElementById('cap-alert');
+
+  if (remaining < 0) {
+    capBox.classList.add('over');
+    capAlert.textContent = 'Alert: You have gone over your monthly cap!';
+  } else {
+    capBox.classList.remove('over');
+    capAlert.textContent = '';
+  }
+}
+
+// Add new transaction
+recordForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+  
+  const description = document.getElementById('description').value;
+  const amount = parseFloat(document.getElementById('amount').value);
+  const date = document.getElementById('date').value;
+  const category = document.getElementById('category').value;
+
+  if (!description || isNaN(amount) || !date) {
+    showStatus('Please fill in all required fields properly.');
+    return;
+  }
+
+  const newRecord = {
+    id: 'txn_' + Date.now(),
+    description,
+    amount,
+    date,
+    category
+  };
+
+  records.push(newRecord);
+  localStorage.setItem('student_records', JSON.stringify(records));
+  
+  recordForm.reset();
+  renderApp();
+  showStatus('Transaction saved!');
+});
+
+// Delete record function attached to window for inline onclick use
+window.deleteRecord = function(id) {
+  if (confirm('Are you sure you want to delete this transaction?')) {
+    records = records.filter(r => r.id !== id);
+    localStorage.setItem('student_records', JSON.stringify(records));
+    renderApp();
+    showStatus('Transaction deleted.');
+  }
+};
+
+// Populate Category dropdown
+function loadCategories() {
+  const categorySelect = document.getElementById('category');
+  categorySelect.innerHTML = '';
+  settings.categories.forEach(cat => {
+    const opt = document.createElement('option');
+    opt.value = cat;
+    opt.textContent = cat;
+    categorySelect.appendChild(opt);
+  });
+}
+
+// Settings form submission
+document.getElementById('settings-form').addEventListener('submit', (e) => {
+  e.preventDefault();
+  settings.cap = parseFloat(document.getElementById('cap-input').value) || settings.cap;
+  settings.rates.USD = parseFloat(document.getElementById('rate-usd').value) || settings.rates.USD;
+  settings.rates.EUR = parseFloat(document.getElementById('rate-eur').value) || settings.rates.EUR;
+  
+  localStorage.setItem('student_settings', JSON.stringify(settings));
+  renderApp();
+  showStatus('Settings updated successfully!');
+});
+
+// Initialize form values from settings
+document.getElementById('cap-input').value = settings.cap;
+document.getElementById('rate-usd').value = settings.rates.USD;
+document.getElementById('rate-eur').value = settings.rates.EUR;
+
+// Event listeners
+searchInput.addEventListener('input', renderApp);
+sortSelect.addEventListener('change', renderApp);
+
+// Run on page load
+loadCategories();
+renderApp();
