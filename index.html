@@ -2,11 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Finance Tracker</title>
     <link rel="stylesheet" href="styles/main.css">
 </head>
 <body>
+
     <header>
         <h1>Student Finance Tracker</h1>
         <nav>
@@ -17,121 +18,120 @@
             <a href="#settings">Settings</a>
         </nav>
     </header>
-    <main id="main">
+
+    <main>
         <section id="about">
             <h2>About</h2>
-            <p>Track your spending as a student, search your transactions with regex, and stay under your monthly cap[cite: 1].</p>
+        <p>Track your spending as a student, search your transactions with regex, and stay under your monthly cap[cite: 1].</p>
         </section>
-        <section id="dashboard">
-            <h2>Dashboard</h2>
-            <div class="cap" id="cap-box">
-                <p class="cap-figure" id="cap-remaining">0 RWF left</p>
-                <div class="meter"><span id="cap-fill"></span></div>
-                <p id="cap-status"></p>
-                <p id="cap-alert"></p>
-            </div>
-            <dl class="stats">
-                <div><dt>Records</dt><dd id="stat-count">0</dd></div>
-                <div><dt>Spent (RWF)</dt><dd id="stat-total">0</dd></div>
-                <div><dt>Top category</dt><dd id="stat-top">None</dd></div>
-                <div><dt>Spent (USD)</dt><dd id="stat-usd">0.00</dd></div>
-                <div><dt>Spent (EUR)</dt><dd id="stat-eur">0.00</dd></div>
-            </dl>
-        </section>
-        <section id="records">
-            <h2>Records</h2>
-            <form class="toolbar">
-                <div>
-                    <label for="search">Search (regex)</label>
-                    <input id="search" placeholder="e.g. coffee|tea">
-                </div>
-                <div>
-                    <label for="sort">Sort by</label>
-                    <select id="sort">
-                        <option value="date-desc">Date (newest)</option>
-                        <option value="date-asc">Date (oldest)</option>
-                        <option value="description-asc">Description (A-Z)</option>
-                        <option value="description-desc">Description (Z-A)</option>
-                        <option value="amount-desc">Amount (high to low)</option>
-                        <option value="amount-asc">Amount (low to high)</option>
-                    </select>
-                </div>
-                <label><input type="checkbox" id="ci" checked> Ignore case</label>
-            </form>
-            <p id="search-status"></p>
-            <table class="records-table">
-                <thead>
-                    <tr>
-                        <th>Description</th>
-                        <th>Amount (RWF)</th>
-                        <th>Category</th>
-                        <th>Date</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="records-body">
-                    <tr>
-                        <td data-label="Description">Lunch at cafeteria</td>
-                        <td data-label="Amount (RWF)">12.50</td>
-                        <td data-label="Category">Food</td>
-                        <td data-label="Date">2025-09-25</td>
-                        <td data-label="Actions">
-                            <button type="button">Edit</button>
-                            <button type="button" class="danger">Delete</button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </section>
-        <section id="add">
-            <h2>Add transaction</h2>
-            <form id="record-form">
-                <input type="hidden" id="record-id">
-                <label for="description">Description</label>
-                <input id="description">
-                <p class="error" id="description-error"></p>
-                <label for="amount">Amount (RWF)</label>
-                <input id="amount">
-                <p class="error" id="amount-error"></p>
-                <label for="date">Date</label>
-                <input id="date" placeholder="YYYY-MM-DD">
-                <p class="error" id="date-error"></p>
-                <label for="category">Category</label>
-                <select id="category"></select>
-                <button type="submit">Save transaction</button>
-                <button type="button" id="cancel-btn">Cancel</button>
-            </form>
-        </section>
-        <section id="settings">
-            <h2>Settings</h2>
-            <form id="settings-form">
-                <label for="cap-input">Monthly cap (RWF)</label>
-                <input id="cap-input">
-                <label for="rate-usd">1 RWF in USD</label>
-                <input id="rate-usd">
-                <label for="rate-eur">1 RWF in EUR</label>
-                <input id="rate-eur">
-                <p class="error" id="settings-error"></p>
-                <button type="submit">Save settings</button>
-            </form>
-            <h3>Categories</h3>
-            <ul id="category-list"></ul>
-            <form id="category-form">
-                <label for="new-category">New category</label>
-                <input id="new-category">
-                <p class="error" id="category-error"></p>
-                <button type="submit">Add category</button>
-            </form>
-            <h3>Your data</h3>
-            <button type="button" id="export-btn">Export JSON</button>
-            <label for="import-file">Import JSON file</label>
-            <input type="file" id="import-file" accept=".json">
-            <p class="error" id="import-error"></p>
-        </section>
-    </main>
-    <p class="status" id="status"></p>
-    <script type="module" src="scripts/main.js"></script>
+    
+    <section id="dashboard">
+        <h2>Dashboard</h2>
+    
+    <div class="cap" id="cap-box">
+        <p class="cap-figure" id="cap-remaining">0 RWF left</p>
+    <div class="meter">
+        <span id="cap-fill"></span>
+    </div>
+<p id="cap-alert" class="error"></p>
+</div>
+
+<div class="stats">
+    <div>
+        <dt>Records</dt>
+    <dd id="stat-count">0</dd>
+    </div>
+<div>
+    <dt>Spent (RWF)</dt>
+<dd id="stat-total">0</dd>
+</div>
+<div>
+    <dt>Spent (USD)</dt>
+<dd id="stat-usd">0.00</dd>
+</div>
+<div>
+    <dt>Spent (EUR)</dt>
+<dd id="stat-eur">0.00</dd>
+</div>
+</div>
+</section>
+
+<section id="records">
+    <h2>Records</h2>
+
+<div class="toolbar">
+    <div>
+        <label for="search">Search</label>
+    <input type="text" id="search" placeholder="Type to search...">
+    </div>
+<div>
+    <label for="sort">Sort By</label>
+<select id="sort">
+    <option value="date-desc">Newest Date</option>
+<option value="date-asc">Oldest Date</option>
+<option value="amount-desc">Highest Amount</option>
+<option value="amount-asc">Lowest Amount</option>
+<option value="description-asc">Description (A-Z)</option>
+<option value="description-desc">Description (Z-A)</option>
+</select>
+</div>
+</div>
+<p id="search-status"></p>
+
+<table>
+    <thead>
+        <tr>
+            <th>Description</th>
+        <th>Amount (RWF)</th>
+    <th>Category</th>
+<th>Date</th>
+<th>Action</th>
+        </tr>
+    </thead>
+<tbody id="records-body">
+</tbody>
+</table>
+</section>
+
+<section id="add">
+    <h2>Add Transaction</h2>
+<form id="record-form">
+    <label for="description">Description</label>
+<input type="text" id="description" required>
+
+<label for="amount">Amount (RWF)</label>
+<input type="number" id="amount" step="any" required>
+
+<label for="date">Date</label>
+<input type="date" id="date" required>
+
+<label for="category">Category</label>
+<select id="category" required></select>
+
+<button type="submit">Save Transaction</button>
+</form>
+</section>
+
+<section id="settings">
+    <h2>Settings</h2>
+
+<form id="settings-form">
+    <label for="cap-input">Monthly Cap (RWF)</label>
+<input type="number" id="cap-input" required>
+
+<label for="rate-usd">USD Exchange Rate</label>
+<input type="number" id="rate-usd" step="any" required>
+
+<label for="rate-eur">EUR Exchange Rate</label>
+<input type="number" id="rate-eur" step="any" required>
+
+<button type="submit">Save Settings</button>
+</form>
+</section>
+</main>
+
+<p class="status" id="status"></p>
+
+<script type="module" src="scripts/main.js"></script>
 </body>
 </html>
-
-
