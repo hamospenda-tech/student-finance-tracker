@@ -21,6 +21,11 @@ function showStatus(msg) {
     }, 3000);
 }
 
+function esc(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
 function renderCategories() {
     const categorySelect = document.getElementById('category');
     const categoryList = document.getElementById('category-list');
@@ -36,7 +41,13 @@ function renderCategories() {
         categorySelect.appendChild(opt);
         
         const li = document.createElement('li');
-        li.innerHTML = cat + ' <button type="button" onclick="removeCategory(\' + cat + '\')" class="danger">Remove</button>';
+        li.textContent = cat + ' ';
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'danger';
+        btn.textContent = 'Remove';
+        btn.addEventListener('click', function() { removeCategory(cat); });
+        li.appendChild(btn);
         categoryList.appendChild(li);
     }
 }
@@ -83,12 +94,12 @@ function renderApp() {
             let r = listToDisplay[i];
             const row = document.createElement('tr');
             row.innerHTML = `
-            <td>${r.description}</td>
+            <td>${esc(r.description)}</td>
             <td>${r.amount}</td>
-            <td>${r.category}</td>
-            <td>${r.date}</td>
+            <td>${esc(r.category)}</td>
+            <td>${esc(r.date)}</td>
             <td>
-            <button onclick="deleteRecord('${r.id}')" class="danger">Delete</button>
+            <button onclick="deleteRecord('${esc(r.id)}')" class="danger">Delete</button>
             </td>
             `;
             recordsBody.appendChild(row);
@@ -152,7 +163,7 @@ recordForm.addEventListener('submit', function(e) {
     records.push(newRecord);
     localStorage.setItem('student_records', JSON.stringify(records));
 
-    recordForm.requestFullscreen();
+    recordForm.reset();
     renderApp();
     showStatus('Transaction saved!');
 });
