@@ -300,9 +300,14 @@ searchInput.addEventListener('input', renderApp);
 sortSelect.addEventListener('change', renderApp);
 
 async function init() {
-    if (localStorage.getItem('student_records') === null) {
+    let currentRecords = JSON.parse(localStorage.getItem('student_records'));
+
+    if (!currentRecords || currentRecords.length === 0) {
         try {
-            const response = await fetch('seed.json');
+            // This ensures it looks in the correct repository subpath on GitHub Pages
+            const seedUrl = new URL('seed.json', window.location.href).href;
+            const response = await fetch(seedUrl);
+
             if (response.ok) {
                 records = await response.json();
                 localStorage.setItem('student_records', JSON.stringify(records));
@@ -315,8 +320,11 @@ async function init() {
                 }
                 localStorage.setItem('student_settings', JSON.stringify(settings));
             }
-        } catch (e) {}
+        } catch (e) {
+            console.error('Error fetching seed.json:', e);
+        }
     }
+
     renderCategories();
     renderApp();
 }
