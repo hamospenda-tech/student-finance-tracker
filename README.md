@@ -3,7 +3,7 @@
 ## 1\. About
 
 - Live site: [https\://hamospenda-tech.github.io/student-finance-tracker/](https://hamospenda-tech.github.io/student-finance-tracker/)  
-- Demo video (unlisted): \[add link here\]  
+- Demo video (unlisted): (https://youtu.be/ZGw5duROUsQ)  
 - GitHub- [hamospenda-tech](https://github.com/hamospenda-tech/student-finance-tracker)  
 - Email- [h.amospenda@alustudent.com](mailto:h.amospenda@alustudent.com)  
 - Theme: Student Finance Tracker, built with plain HTML, CSS and JavaScript (no frameworks)
